@@ -19,3 +19,17 @@ Un **sistema de control de versiones** (VCS) es una herramienta que registra y g
 
 **Ejemplo**: Git es un popular sistema de control de versiones distribuido.
 # Segunda Respuesta 
+## Repositorio Local vs. Repositorio Remoto
+
+### Repositorio Local
+
+- **Ubicación**: Almacenado en el disco duro del usuario.
+- **Acceso**: Sólo accesible desde la máquina local.
+- **Uso**: Permite realizar cambios, commits y revisiones sin conexión a internet.
+
+### Repositorio Remoto
+
+- **Ubicación**: Almacenado en un servidor remoto (e.g., GitHub, GitLab).
+- **Acceso**: Accesible desde cualquier lugar con conexión a internet.
+- **Uso**: Facilita la colaboración, el intercambio de cambios y la sincronización entre múltiples desarrolladores.
+
