@@ -66,4 +66,13 @@ Un **sistema de control de versiones** (VCS) es una herramienta que registra y g
 - **Función**: Gestiona y guarda toda la información del proyecto versionado.
 - **Metáfora**: Como "tomar la foto", donde se guarda la instantánea de todos los archivos y cambios preparados.
 
+# Quinta respuesta
+
+## Uso de Ramas en Git
+
+- **Propósito**: Las ramas en Git se utilizan para desarrollar funcionalidades, corregir errores o experimentar de manera aislada del código principal.
+- **Ventaja**: Permiten trabajar en paralelo sin afectar la estabilidad de la rama principal (usualmente `main` o `master`).
+- **Integración**: Los cambios en una rama se pueden fusionar con la rama principal una vez que están listos y probados.
+
+
 
