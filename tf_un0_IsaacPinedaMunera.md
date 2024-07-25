@@ -51,5 +51,19 @@ Un **sistema de control de versiones** (VCS) es una herramienta que registra y g
    - **Git**: Se centra en el control de versiones y la gestión de cambios en los archivos del proyecto. Es una herramienta que proporciona el backend para las operaciones de versionado.
    - **GitHub**: Se centra en la colaboración y la gestión de proyectos. Proporciona una interfaz visual y herramientas colaborativas adicionales, como wikis, issues y GitHub Actions para integración y entrega continua.
 
+# Cuarta Respuesta
+
+
+## Área de Preparación (Staging Area)
+
+- **Descripción**: Es un área temporal donde se colocan los cambios que serán incluidos en el próximo commit.
+- **Función**: Permite seleccionar y preparar cambios específicos antes de confirmarlos.
+- **Metáfora**: Como "ubicarse para la foto", donde decides qué cambios serán parte de la próxima instantánea del proyecto.
+
+## Directorio de Git (Git Directory)
+
+- **Descripción**: Es el lugar donde Git almacena todos los datos del repositorio, incluyendo el historial completo de cambios y la configuración.
+- **Función**: Gestiona y guarda toda la información del proyecto versionado.
+- **Metáfora**: Como "tomar la foto", donde se guarda la instantánea de todos los archivos y cambios preparados.
 
 
