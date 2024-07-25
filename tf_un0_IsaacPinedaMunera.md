@@ -1,4 +1,5 @@
-# Sistema de Control de Versiones
+# Primera Respuesta
+## Sistema de Control de Versiones
 
 Un **sistema de control de versiones** (VCS) es una herramienta que registra y gestiona los cambios en los archivos a lo largo del tiempo. Es crucial en el desarrollo de software para mantener un historial de modificaciones, facilitar la colaboración y permitir la recuperación de versiones anteriores.
 
@@ -14,6 +15,7 @@ Un **sistema de control de versiones** (VCS) es una herramienta que registra y g
 
 1. **Local**: Cambios almacenados en el disco duro del usuario.
 2. **Centralizado**: Un servidor central almacena todas las versiones.
-3. **Distribuido**: Cada desarrollador tiene una copia completa del historial (e.g., Git).
+3. **Distribuido**: Cada desarrollador tiene una copia completa del historial (e.j., Git).
 
 **Ejemplo**: Git es un popular sistema de control de versiones distribuido.
+# Segunda Respuesta 
