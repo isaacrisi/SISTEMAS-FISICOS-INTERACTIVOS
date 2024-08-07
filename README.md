@@ -145,19 +145,19 @@ void loop() {
     inter++;
   }
   
-  if(inter == 10000){
+  if(inter == 1000){
     Serial.print("UNO SECOND"); Serial.print('\n');
     Serial.print(inter); Serial.print('\n'); Serial.print('\n');
   }
-  if(inter == 20000){
+  if(inter == 2000){
     Serial.print("DOS SECONDS"); Serial.print('\n');
     Serial.print(inter); Serial.print('\n'); Serial.print('\n');
   }
-  if(inter == 30000){
+  if(inter == 3000){
     Serial.print("TRES SECONDS"); Serial.print('\n');
     Serial.print(inter); Serial.print('\n'); Serial.print('\n');
   }
-  if(inter > 30000){
+  if(inter > 3000){
     Serial.print("START_OVER"); Serial.print('\n');
     Serial.print(inter); Serial.print('\n'); Serial.print('\n');
     inter = 0;
