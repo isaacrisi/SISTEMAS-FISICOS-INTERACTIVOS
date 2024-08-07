@@ -113,3 +113,75 @@ El programa define una máquina de estados que se ejecuta dentro de una función
 ### ¿Pudiste ver este mensaje: `Serial.print("Task1States::WAIT_TIMEOUT\n");`. ¿Por qué crees que ocurre esto?
 
 Este mensaje se imprime una vez cuando el programa cambia del estado `INIT` al estado `WAIT_TIMEOUT`. El mensaje sirve para indicar que la máquina de estados ha pasado al estado de espera (`WAIT_TIMEOUT`), y confirma que la transición de estado se ha realizado con éxito. Esto ocurre debido a la instrucción `Serial.print("Task1States::WAIT_TIMEOUT\n");` dentro del bloque del estado `INIT`.
+
+### ¿Cuántas veces se ejecuta el código en el case Task1States::INIT?
+
+Una vez.
+
+# Ejercicio 7
+Observa la función 
+```c++
+millis(); 
+```
+¿Para qué sirve?
+Esta devuelve la cantidad de milisegundos que han transcurrido desde que se inicio el programa.
+
+
+# Ejercicio 8
+- Realiza un programa que envíe un mensaje al pasar un segundo, dos segundos y tres segundos. Luego de esto debe volver a comenzar.
+```c++
+void setup() 
+{
+  // put your setup code here, to run once:
+  const int inter = 0;
+}
+
+void loop() {
+
+  uint32_t currentTime = millis();
+
+  if (millis() > currentTime)
+  {
+    inter++;
+  }
+  
+  if(inter == 10000){
+    Serial.print("UNO SECOND"); Serial.print('\n');
+    Serial.print(inter); Serial.print('\n'); Serial.print('\n');
+  }
+  if(inter == 20000){
+    Serial.print("DOS SECONDS"); Serial.print('\n');
+    Serial.print(inter); Serial.print('\n'); Serial.print('\n');
+  }
+  if(inter == 30000){
+    Serial.print("TRES SECONDS"); Serial.print('\n');
+    Serial.print(inter); Serial.print('\n'); Serial.print('\n');
+  }
+  if(inter > 30000){
+    Serial.print("START_OVER"); Serial.print('\n');
+    Serial.print(inter); Serial.print('\n'); Serial.print('\n');
+    inter = 0;
+  }
+}
+```
+Por alguna razón el programa dice que una variable no está declarada -b
+
+En el README.md del repositorio responde:
+- ¿Cuáles son los estados del programa?
+No hay ??.
+
+- ¿Cuáles son los eventos?
+Cada que pasa cierta cantidad de segundos se ejecuta uno de los if.
+
+- ¿Cuáles son las acciones?
+Escribir en el monitor serie.
+
+# Ejercicio 8
+
+
+
+
+
+
+
+
