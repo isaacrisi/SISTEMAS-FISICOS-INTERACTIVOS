@@ -103,7 +103,7 @@ El programa define una máquina de estados que se ejecuta dentro de una función
    - Se inicializa la comunicación serial con `Serial.begin(115200)`.
    - Se establece el tiempo inicial `lastTime` usando `millis()`.
    - Se cambia el estado a `WAIT_TIMEOUT` y se imprime el mensaje `"Task1States::WAIT_TIMEOUT\n"` por el puerto serial.
-   - Este estado se ejecuta solo una vez.
+   - Este estado se ejecuta solo una vez ya que no se cambia de estado por el resto del programa.
 
 2. **Estado `WAIT_TIMEOUT`**:
    - En cada iteración del `loop()`, se comprueba si ha transcurrido el intervalo de tiempo definido por `INTERVAL` (1000 ms o 1 segundo).
@@ -112,7 +112,7 @@ El programa define una máquina de estados que se ejecuta dentro de una función
 
 ### ¿Pudiste ver este mensaje: `Serial.print("Task1States::WAIT_TIMEOUT\n");`. ¿Por qué crees que ocurre esto?
 
-Este nunca apareció, y no sabemos por qué ya que los estados no parecen definirse en ningún momento antes del `switch`.
+No, y esto no es porque el mensaje no se haya imprimido. Lo que sucede es que el mensaje se envía tan pronto el programa inicia, es decir, incluso antes que pase el primer segundo, y ya que el monutor serie toca volverlo a abrir cada vez que se vuelve a iniciarlizar el programa, el mensaje se pierde al estar en todo el inicio; solo alcanzándose a ver los mensajes a partir del primer o segundo segundo transcurrido desde que se inicializó el programa.
 
 ### ¿Cuántas veces se ejecuta el código en el case Task1States::INIT?
 
@@ -124,58 +124,161 @@ Observa la función 
 millis(); 
 ```
 ¿Para qué sirve?
+###
 Esta devuelve la cantidad de milisegundos que han transcurrido desde que se inicio el programa.
 
 
 # Ejercicio 8
-- Realiza un programa que envíe un mensaje al pasar un segundo, dos segundos y tres segundos. Luego de esto debe volver a comenzar.
+Realiza un programa que envíe un mensaje al pasar un segundo, dos segundos y tres segundos. Luego de esto debe volver a comenzar.
 ```c++
-void setup() 
+   void mess()
 {
-  // put your setup code here, to run once:
-  const int inter = 0;
+    // Definición de estados y variable de estado
+    enum class MessSTates
+    {
+        ONE,
+        TWO,
+        THREE
+    };
+    static MessSTates state = MessSTates::ONE;
+    static uint32_t previousTime = millis();
+    uint32_t currentTime = millis();
+
+    // MÁQUINA de ESTADOS
+    switch (state)
+    {
+    case MessSTates::ONE:
+    {
+        if ((currentTime - previousTime) >= 1000)
+        {
+            Serial.print("UNO SECOND"); Serial.print('\n');
+            previousTime = currentTime;
+            state = MessSTates::TWO;
+        }
+        break;
+    }
+    case MessSTates::TWO:
+    {
+        if ((currentTime - previousTime) >= 1000)
+        {
+            Serial.print("DOS SECOND"); Serial.print('\n');
+            previousTime = currentTime;
+            state = MessSTates::THREE;
+        }        
+        break;
+    }
+    case MessSTates::THREE:
+    {
+        if ((currentTime - previousTime) >= 1000)
+        {
+            Serial.print("TRES SECOND"); Serial.print('\n'); Serial.print('\n');
+            previousTime = currentTime;
+            state = MessSTates::ONE;
+        }
+        break;
+    }
+    default:
+    {
+        Serial.println("Error");
+    }
+    }
 }
 
-void loop() {
+void setup()
+{
+    Serial.begin(9600);
+}
 
-  uint32_t currentTime = millis();
-
-  if (millis() > currentTime)
-  {
-    inter++;
-  }
-  
-  if(inter == 1000){
-    Serial.print("UNO SECOND"); Serial.print('\n');
-    Serial.print(inter); Serial.print('\n'); Serial.print('\n');
-  }
-  if(inter == 2000){
-    Serial.print("DOS SECONDS"); Serial.print('\n');
-    Serial.print(inter); Serial.print('\n'); Serial.print('\n');
-  }
-  if(inter == 3000){
-    Serial.print("TRES SECONDS"); Serial.print('\n');
-    Serial.print(inter); Serial.print('\n'); Serial.print('\n');
-  }
-  if(inter > 3000){
-    Serial.print("START_OVER"); Serial.print('\n');
-    Serial.print(inter); Serial.print('\n'); Serial.print('\n');
-    inter = 0;
-  }
+void loop()
+{
+    mess();
 }
 ```
-Por alguna razón el programa dice que una variable no está declarada -b
-
 En el README.md del repositorio responde:
 - ¿Cuáles son los estados del programa?
 #### 
-No hay ??.
+   - ONE: Para el mensaje de un segundo, y llamar al estado `TWO`.
+   - TWO: Para el mensaje de dos segundos, y llamar el estado `THREE`.
+   - THREE: Para el mensaje de tres segundos, y llamar el estado `ONE`, para que sea un bucle.
 
 - ¿Cuáles son los eventos?
 #### 
-Cada que pasa cierta cantidad de segundos se ejecuta uno de los if.
+Son los `if` incorporados en cada estado, por los cuales se imprime el mensaje y se reasigna el estado de `state`.
 
 - ¿Cuáles son las acciones?
 #### 
-Escribir en el monitor serie.
+`Serial.begin(9600)` son las acciones presentes en el programa.
+
+# Ejercicio 9
+Te voy a mostrar el código para la task1 y luego con tu equipo vas a construir las demás tareas. La frecuencia del mensaje será de 1 Hz.
+
+El objetivo es que hagas un programa donde tengas 3 tareas. La tarea 1 enviará un mensaje a 1 Hz., la tarea 2 a 0.5 Hz., la tarea 3 a 0.25 Hz.
+
+Te voy a dejar como ejemplo el programa de una de las tareas. Te queda entonces el reto de realizar las otras tareas. No olvides sincronizar tu repositorio local con el remoto donde está la evaluación.
+```c++
+void task1(){
+    enum class Task1States{
+        INIT,
+        WAIT_FOR_TIMEOUT
+    };
+
+    static Task1States task1State = Task1States::INIT;
+    static uint32_t lastTime;
+    static constexpr uint32_t INTERVAL = 1000;
+
+    switch(task1State){
+        case Task1States::INIT:{
+            Serial.begin(115200);
+            lastTime = millis();
+            task1State = Task1States::WAIT_FOR_TIMEOUT;
+            break;
+        }
+
+        case Task1States::WAIT_FOR_TIMEOUT:{
+            // evento 1:            uint32_t currentTime = millis();
+            if( (currentTime - lastTime) >= INTERVAL ){
+                lastTime = currentTime;
+                Serial.print("mensaje a 1Hz\n");
+            }
+            break;
+        }
+
+        default:{
+            break;
+        }
+    }
+}
+
+void task2(){
+
+}
+
+void task3(){
+
+}
+
+void setup()
+{
+    task1();
+    task2();
+    task3();
+}
+
+void loop()
+{
+    task1();
+    task2();
+    task3();
+}
+```
+
+# Ejercicio 11
+
+
+
+
+
+
+
+
 
