@@ -509,17 +509,226 @@ void loop()
 }
 ```
 ### Hipótesis
--
+Lo que el programa hace es hace un tarea que utiliza dos métodos auxiliares. Inicialmente, dentro de la tarea se crea una variable `var` y su respectivo puntero `pvar`, estos se igualan y se imprime el valor del puntero, luego, usando los métodos externos, se cambia el valor del puntero y luego imprime la variable `var`. En teoría, solo se deberían imprimir dos ceros cuando se haya ingresado un valor con el `send`.
 
 ### Qué hace realmente
--
+![image](https://github.com/user-attachments/assets/ab091042-d531-4584-b67f-643ed57fc0e5)
+Aparentemente, al cambiar el valor del puntero de `pvar` también se cambió, de alguna forma, la variable `var`.
 
 # Ejercicio 14
+Realiza un programa que intercambie mediante una función el valor de dos variables.
+``` c++
+static void changeVar(uint32_t *pdata)
+{
+    *pdata = 10;
+     //data = 15; No importa si se le cambia el valor a la variable que tiene el puntero, solo permite cambiar el valor si se le cambia el valor al puntero.
+}
+
+static void printVar(uint32_t value)
+{
+    Serial.print("var content: ");
+    Serial.print(value);
+    Serial.print('\n');
+}
+
+void task1()
+{
+    enum class Task1States    {
+        INIT,
+        WAIT_DATA
+    };
+    static Task1States task1State = Task1States::INIT;
+
+    switch (task1State)
+    {
+    case Task1States::INIT:
+    {
+        Serial.begin(115200);
+        task1State = Task1States::WAIT_DATA;
+        break;
+    }
+
+    case Task1States::WAIT_DATA:
+    {
+        // evento 1:        // Ha llegado al menos un dato por el puerto serial?        
+	if (Serial.available() > 0)
+        {
+            Serial.read();
+            uint32_t var = 1;
+            uint32_t *pvar = &var;
+            printVar(*pvar); printVar(var); Serial.print('\n'); Serial.print('\n');
+            changeVar(pvar);
+            //var = 15; Si se cambia aquí, ahora si se actualiza el valor de ambas variables wat???
+            printVar(*pvar); printVar(var); Serial.print('\n'); Serial.print('\n');
+        }
+        break;
+    }
+
+    default:
+    {
+        break;
+    }
+    }
+}
+
+void setup()
+{
+    task1();
+}
+
+void loop()
+{
+    task1();
+}
+```
+No sé que está pidiendo la profe, lo de arriba fue más que nada experimentando.
+
+# Ejercicio 15
+static void processData(uint8_t *pData, uint8_t size, uint8_t *res)
+``` c++
+static void processData(uint8_t *pData, uint8_t size, uint8_t *res)
+{
+    uint8_t sum = 0;
+    for (int i = 0; i < size; i++)
+    {
+        sum = sum + (pData[i] - 0x30);
+    }
+    *res = sum;
+}
+
+void task1()
+{
+    enum class Task1States    {
+        INIT,
+        WAIT_DATA
+    };
+    static Task1States task1State = Task1States::INIT;
+    static uint8_t rxData[5];
+    static uint8_t dataCounter = 0;
+
+    switch (task1State)
+    {
+    case Task1States::INIT:
+    {
+        Serial.begin(115200);
+        task1State = Task1States::WAIT_DATA;
+        break;
+    }
+
+    case Task1States::WAIT_DATA:
+    {
+        // evento 1:        if (Serial.available() > 0)
+        {
+            rxData[dataCounter] = Serial.read();
+            dataCounter++;
+            if (dataCounter == 5)
+            {
+                uint8_t result = 0;
+                processData(rxData, dataCounter, &result);
+                dataCounter = 0;
+                Serial.print("result: ");
+                Serial.print(result);
+                Serial.print('\n');
+            }
+        }
+        break;
+    }
+
+    default:
+    {
+        break;
+    }
+    }
+}
+
+
+void setup()
+{
+    task1();
+}
+
+void loop()
+{
+    task1();
+}
+```
+### Utf8
+![image](https://github.com/user-attachments/assets/55cbfd6b-2b82-48ba-9202-8d4ebbb21c3f)
+### Mixed
+![image](https://github.com/user-attachments/assets/6499f6da-8830-4a32-96df-902809b7515d)
+
+Piensa en las siguientes cuestiones:
+- ¿Por qué es necesario declarar `rxData` static? y si no es static ¿Qué pasa? ESTO ES IMPORTANTE, MUCHO.
+Para que su valor se mantenga constante durante todo el programa, pues si no se le pone el static, su valor declarado se resetearía al pasar a otras funciones.
+
+- `dataCounter` se define static y se inicializa en 0. ¿Cada vez que se ingrese a la función loop `dataCounter` se inicializa a 0? ¿Por qué es necesario declararlo static?
+No, ya que se declaró como static, su valor será constante a menos que sea cambiado manualmente.
+
+- Observa que el nombre del arreglo corresponde a la dirección del primer elemento del arreglo. Por tanto, usar en una expresión el nombre rxData (sin el operador []) equivale a &rxData[0].
+- En la expresión `sum = sum + (pData[i] - 0x30);` observa que puedes usar el puntero pData para indexar cada elemento del arreglo mediante el operador [].
+- Finalmente, la constante `0x30` en `(pData[i] - 0x30)` ¿Por qué es necesaria?
+Idk.
+
+# Ejercicio 16
+Qué crees que ocurre cuando:
+- ¿Qué pasa cuando hago un [Serial.available()](https://www.arduino.cc/reference/en/language/functions/communication/serial/available/)?
+Este almacena los datos (en bytes) que se hayan enviado hacia el puerto serial.
+
+- ¿Qué pasa cuando hago un [Serial.read()](https://www.arduino.cc/reference/en/language/functions/communication/serial/read/)?
+Lee los datos que se enviaron al puerto serial.
+
+- ¿Qué pasa cuando hago un Serial.read() y no hay nada en el buffer de recepción?
+Como no hay nada que leer, este leería la cantidad de datos en el puerto serial, que sería igual a 0 bytes.
+
+- Un patrón común al trabajar con el puerto serial es este:
+``` c++
+if(Serial.available() > 0)
+{
+    int dataRx = Serial.read()
+}
+```
+- ¿Cuántos datos lee `Serial.read()`?
+Lee la cantidad de bytes que se hayan enviado, que en este caso si o si serían mayores a 0.
+
+- ¿Y si quiero leer más de un dato? No olvides que no se pueden leer más datos de los disponibles en el buffer de recepción porque no hay más datos que los que tenga allí.
+Se pone en el `if` que solo se lea cuando el `Serial.available()` sea mayor a uno, y se crea una variable para cada dato.
+
+- ¿Qué pasa si te envían datos por serial y se te olvida llamar `Serial.read()`?
+Los bytes enviados se van a ir acomuluando, es decir, los bytes enviados aumentarán a medida que más sean enviado, mientras que los recibidos permanecerán en cero; esto hasta que se reciban/lean con un `Serial.read()` y los bytes recibidos se actualicen.
+#### bytes recividos e enviados con un Serial.read() activo desde siempre:
+![image](https://github.com/user-attachments/assets/f4eaecd6-0712-4253-a2f9-963488c75a44)
+
+# Ejercicio 17
+Así se pueden leer 3 datos que han llegado al puerto serial:
+``` c++
+if(Serial.available() >= 3)
+{
+    int dataRx1 = Serial.read();
+    int dataRx2 = Serial.read();
+    int dataRx3 = Serial.read();
+}
+```
+¿Qué escenarios podría tener en este caso?
+``` c++
+if(Serial.available() >= 2)
+{
+    int dataRx1 = Serial.read();
+    int dataRx2 = Serial.read();
+    int dataRx3 = Serial.read();
+}
+```
+
+Para responder, es necesario que experimentes. ESTOS son los ejercicios que realmente te ayudarán a aprender.
 
 
 
+# Ejercicio 18
 
 
 
+# Ejercicio 19
+
+
+# Ejercicio 20
 
 
