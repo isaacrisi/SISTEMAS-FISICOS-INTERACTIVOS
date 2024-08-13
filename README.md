@@ -333,7 +333,188 @@ void loop()
 ```
 
 # Ejercicio 11
+![image](https://github.com/user-attachments/assets/0ed6bf80-82e6-40d7-b2bd-0ebf591791f9)
+1. Analiza el programa. ¿Por qué enviaste la letra con el botón send? ¿Qué evento verifica si ha llegado algo por el puerto serial?
+#### 
+Porque el botón `send` envía los datos actuales ingresados al puerto serial, y luego el `if (Serial.available() > 0)` verifica si efectivamente se han ingresado datos o no. Si se han ingresado, el valor será mayor a cero y se imprimirá el mensaje.
 
+2. [Abre](https://www.asciitable.com/) esta tabla.
+####
+3. Analiza los números que se ven debajo de las letras. Nota que luego de la r, abajo, hay un número. ¿Qué es ese número?
+#### 
+El valor en datos numéricos de cada tecla del teclado.
+
+4. ¿Qué relación encuentras entre las letras y los números?
+#### 
+Tienen un una especie de orden, siendo el de los números ascendente.
+
+5. ¿Qué es el 0a al final del mensaje y para qué crees que sirva?
+#### 
+Editando el mensaje, por ahora se podría presumir que representa el `\n`, osea, el salto de línea.
+
+6. Nota que luego de verificar si hay datos en el puerto serial se DEBE HACER UNA LECTURA del puerto. Esto se hace para retirar del puerto el dato que llegó. Si esto no se hace entonces parecerá que siempre tiene un datos disponible en el serial para leer. ¿Tiene sentido esto? Si no es así habla con el profe.
+#### 
+Digamos que sí -b.
+
+# Ejercicio 12
+``` c++
+void task1()
+{
+    enum class Task1States    {
+        INIT,
+        WAIT_DATA
+    };
+    static Task1States task1State = Task1States::INIT;
+
+    switch (task1State)
+    {
+    case Task1States::INIT:
+    {
+        Serial.begin(115200);
+        task1State = Task1States::WAIT_DATA;
+        break;
+    }
+
+    case Task1States::WAIT_DATA:
+    {
+        // evento 1:        // Ha llegado al menos un dato por el puerto serial? 
+       if (Serial.available() > 0)
+        {
+            // DEBES leer ese dato, sino se acumula y el buffer de recepción 
+            //del serial se llenará.   
+		        Serial.read();
+            uint32_t var = 0;
+
+            // Almacena en pvar la dirección de var.      
+			      uint32_t *pvar = &var;
+
+            // Envía por el serial el contenido de var usando 
+           // el apuntador pvar.    
+            Serial.print("var content: ");
+            Serial.print(*pvar);
+            Serial.print('\n');
+
+            // ESCRIBE el valor de var usando pvar   
+            *pvar = 10;
+            Serial.print("var content: ");
+            Serial.print(*pvar);
+            Serial.print('\n');
+        }
+        break;
+    }
+
+    default:
+    {
+        break;
+    }
+    }
+}
+
+void setup()
+{
+    task1();
+}
+
+void loop()
+{
+    task1();
+}
+```
+![image](https://github.com/user-attachments/assets/d7e2064e-f1af-449c-ac29-c202209cb98a)
+La variable `pvar` se conoce como puntero. Simplemente es una variable en la cual se almacenan direcciones de otras variables. En este caso, en pvar se almacena la dirección de `var`. Nota que debes decirle al compilador el tipo de la variable (uint32_t en este caso) cuya dirección será almacenada en pvar.
+Ejecuta el programa. Observa lo que hace. Ahora responde las siguientes preguntas mediante un ejercicio de ingeniería inversa:
+
+- ¿Cómo se declara un puntero?
+####
+Se declara poniéndole el tipo de variable de la variable a la cual se le almacenará la dirección, de la forma: `tipoDeVariable *pVariableReferente;`. Lo que lo hace un puntero es ponerle el '*', y para identificarlo ponerle la 'p' al inicio.
+
+- ¿Cómo se define un puntero? (cómo se inicializa)
+####
+Se le pueden asignar otros valores acorde al tipo de variable de `pvar`, igualándolo a dicho valor. Por ejemplo en el caso de que sea un `uint32_t`, se pueden poner números enteros, como sería en: `*pvar = 10;`
+
+- ¿Cómo se obtiene la dirección de una variable?
+#### 
+Se iguala a la variable a la cual se desea almacenar la dirección, fijándose que ambas tengas el mismo tipo de variable. En este caso se iguala a `var`, quedando de la forma: `*pvar = &var;`.
+
+- ¿Cómo se puede leer el contenido de una variable por medio de un puntero?
+#### 
+-blank-
+
+- ¿Cómo se puede escribir el contenido de una variable por medio de un puntero?
+#### 
+-blank-
+
+# Ejercicio 13
+Vas a escribir el siguiente programa, pero antes de ejecutarlo vas a tratar de lanzar una HIPÓTESIS de qué hace. Luego lo vas a ejecutar y compararás el resultado con lo que creías. Si el resultado no es el esperado, no deberías seguir al siguiente ejercicio hasta que no experimentes y salgas de la duda.
+``` c++
+static void changeVar(uint32_t *pdata)
+{
+    *pdata = 10;
+}
+
+static void printVar(uint32_t value)
+{
+    Serial.print("var content: ");
+    Serial.print(value);
+    Serial.print('\n');
+}
+
+void task1()
+{
+    enum class Task1States    {
+        INIT,
+        WAIT_DATA
+    };
+    static Task1States task1State = Task1States::INIT;
+
+    switch (task1State)
+    {
+    case Task1States::INIT:
+    {
+        Serial.begin(115200);
+        task1State = Task1States::WAIT_DATA;
+        break;
+    }
+
+    case Task1States::WAIT_DATA:
+    {
+        // evento 1:        // Ha llegado al menos un dato por el puerto serial?        
+	if (Serial.available() > 0)
+        {
+            Serial.read();
+            uint32_t var = 0;
+            uint32_t *pvar = &var;
+            printVar(*pvar);
+            changeVar(pvar);
+            printVar(var);
+        }
+        break;
+    }
+
+    default:
+    {
+        break;
+    }
+    }
+}
+
+void setup()
+{
+    task1();
+}
+
+void loop()
+{
+    task1();
+}
+```
+### Hipótesis
+-
+
+### Qué hace realmente
+-
+
+# Ejercicio 14
 
 
 
