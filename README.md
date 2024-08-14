@@ -356,7 +356,7 @@ Editando el mensaje, por ahora se podría presumir que representa el `\n`, osea,
 #### 
 Digamos que sí -b.
 
-# Ejercicio 12 (incompleto)
+# Ejercicio 12
 ``` c++
 void task1()
 {
@@ -438,11 +438,11 @@ Se iguala a la variable a la cual se desea almacenar la dirección, fijándose q
 
 - ¿Cómo se puede leer el contenido de una variable por medio de un puntero?
 #### 
--blank-
+Se pone el puntero dentro de un `Serial.print()` para que se pueda imprimir y visualizar el valor almacenado en el puntero y en la variable vinculada al puntero.
 
 - ¿Cómo se puede escribir el contenido de una variable por medio de un puntero?
 #### 
--blank-
+Se iguala el puntero al valor deseado, y automáticamente el valor que tenía la variable vinculado a este se cambiará al del puntero.
 
 # Ejercicio 13
 Vas a escribir el siguiente programa, pero antes de ejecutarlo vas a tratar de lanzar una HIPÓTESIS de qué hace. Luego lo vas a ejecutar y compararás el resultado con lo que creías. Si el resultado no es el esperado, no deberías seguir al siguiente ejercicio hasta que no experimentes y salgas de la duda.
@@ -762,8 +762,9 @@ void task1()
 
     case Task1States::WAIT_DATA:
     {
-        // evento 1:        // Ha llegado al menos un dato por el puerto serial? 
-        if(Serial.available() >= num)
+        // evento 1:        // Ha llegado al menos un dato por el puerto serial?
+
+        if(Serial.available() == num)
 {
     for (int i = 0; i <= num; i++)
     {
