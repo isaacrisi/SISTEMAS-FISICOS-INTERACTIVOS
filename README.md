@@ -740,9 +740,66 @@ Piense cómo podrías hacer lo siguiente:
 ####
 Inventa un programa que ilustre todo lo anterior y en el archivo README.md escribe cómo solucionaste el problema.
 ``` c++
+void task1()
+{
+    enum class Task1States    {
+        INIT,
+        WAIT_DATA
+    };
+    static Task1States task1State = Task1States::INIT;
+    static uint8_t num = 32;
+    static uint8_t Data[32];
+    static uint8_t cont = 0;
+    
+    switch (task1State)
+    {
+    case Task1States::INIT:
+    {
+        Serial.begin(115200);
+        task1State = Task1States::WAIT_DATA;
+        break;
+    }
 
+    case Task1States::WAIT_DATA:
+    {
+        // evento 1:        // Ha llegado al menos un dato por el puerto serial? 
+        if(Serial.available() >= num)
+{
+    for (int i = 0; i <= num; i++)
+    {
+        Data[i] = Serial.read(); cont++;
+    }
+    Serial.print('\n');
+    Serial.print("Cantidad de datos totales: "); Serial.print(cont); Serial.print('\n'); Serial.print('\n');
+       for (int i = 0; i <= num; i++)
+    {
+        Serial.print("Dato "); Serial.print(i); Serial.print(": ");
+        Serial.print(Data[i]); Serial.print('\n');
+    } 
+}
+    
+    break;
+    }
+    
+    default:
+    {
+        break;
+    }
+    }
+}
+
+void setup()
+{
+    task1();
+}
+
+void loop()
+{
+    task1();
+}
 ```
+No he podido probar si funciona (el Arduino IDE no quiere subirlo a la placa).
 
 # Trabajo final
-
+-blank-
 
