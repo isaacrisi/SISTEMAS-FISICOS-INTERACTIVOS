@@ -740,17 +740,25 @@ Piense cómo podrías hacer lo siguiente:
 ####
 Inventa un programa que ilustre todo lo anterior y en el archivo README.md escribe cómo solucionaste el problema.
 ``` c++
+#define BUFFER_SIZE 32
+
 void task1()
 {
-    enum class Task1States    {
+    // Estados de la tarea
+    enum class Task1States {
         INIT,
         WAIT_DATA
     };
+
+    // Estado inicial de la tarea
     static Task1States task1State = Task1States::INIT;
-    static uint8_t num = 32;
-    static uint8_t Data[32];
-    static uint8_t cont = 0;
-    
+
+    // Buffer de recepción encapsulado
+    static uint8_t rxBuffer[BUFFER_SIZE];
+
+    // Contador de bytes recibidos
+    static uint8_t dataCounter = 0;
+
     switch (task1State)
     {
     case Task1States::INIT:
@@ -762,26 +770,35 @@ void task1()
 
     case Task1States::WAIT_DATA:
     {
-        // evento 1:        // Ha llegado al menos un dato por el puerto serial?
+        // Verifica si hay datos disponibles en el puerto serial
+        while (Serial.available() > 0 && dataCounter < BUFFER_SIZE)
+        {
+            // Lee el próximo byte del puerto serial y lo almacena en el buffer
+            rxBuffer[dataCounter] = Serial.read();
+            dataCounter++;
+            Serial.print("Hay ");
+            Serial.print(dataCounter);
+            Serial.print(" datos en el buffer");
+            Serial.print('\n');
+        }
 
-        if(Serial.available() == num)
-{
-    for (int i = 0; i <= num; i++)
-    {
-        Data[i] = Serial.read(); cont++;
+        // Si el buffer se llena, se puede procesar o hacer algo con los datos aquí
+        if (dataCounter == BUFFER_SIZE)
+        {
+            // Procesar los datos del buffer, por ejemplo, imprimir el contenido
+            Serial.print("Buffer lleno: ");
+            for (uint8_t i = 0; i < BUFFER_SIZE; i++) {
+                Serial.print((char)rxBuffer[i]); // Convertir a carácter para imprimir
+            }
+            Serial.println();
+
+            // Reiniciar el contador si es necesario o continuar con el procesamiento
+            dataCounter = 0; // Para reutilizar el buffer, reiniciamos el contador
+        }
+
+        break;
     }
-    Serial.print('\n');
-    Serial.print("Cantidad de datos totales: "); Serial.print(cont); Serial.print('\n'); Serial.print('\n');
-       for (int i = 0; i <= num; i++)
-    {
-        Serial.print("Dato "); Serial.print(i); Serial.print(": ");
-        Serial.print(Data[i]); Serial.print('\n');
-    } 
-}
-    
-    break;
-    }
-    
+
     default:
     {
         break;
@@ -791,16 +808,31 @@ void task1()
 
 void setup()
 {
+    // Llama a la tarea una vez para inicializarla
     task1();
 }
 
 void loop()
 {
+    // Llama a la tarea repetidamente para manejar la recepción de datos
     task1();
 }
 ```
-No he podido probar si funciona (el Arduino IDE no quiere subirlo a la placa).
 
 # Trabajo final
--blank-
+En una experiencia un grupo terrorista llamado “Disedentes del tiempo” realizan la configuración de una central nuclear global con la que se realizará la emisión de radiación nuclear al mundo. El sistema utiliza una interfaz de usuario simulada mediante el puerto serial, implementada en un entorno de software de Arduino.
+
+En esta configuración inicial el sistema inicia en modo de configuración, mostrando una vez el mensaje CONFIG. En este modo se le configura el tiempo para abrir la cámara, por defecto tiene 5 seg y puede configurarse  entre 1 y 40 segundos con los botones S(Subir) y B(Bajar) en pasos de 1 segundo. Tan pronto se ajuste el tiempo de apertura de la cámara se termina con la letra L (listo) y se observa la cuenta en una pantalla, al final de la cual se abre la cámara y se hace la emisión de la radiación.  Cuando la cuenta regresiva termine debe mostrarse el mensaje “RADIACIÓN NUCLEAR ACTIVA” y a los dos segundos pasar nuevamente al modo CONFIG.
+
+La misión del participante de la experiencia es salvar el mundo, por lo cual debe descifrar con pistas e ingresar el código de acceso, para lo cual  se envía por el puerto serial la secuencia 'C' seguido de la clave numérica (por ejemplo, 'C1234'). Si ingresas la clave correcta debe aparecer el mensaje “SALVASTE AL MUNDO”, sino la cuenta regresiva debe continuar hasta el fatal desenlace.
+
+Te dejo el siguiente material trabajado en clase como complemento a la información del trayecto de actividades.
+
+[Presentación de sistemas embebidos](https://upbeduco-my.sharepoint.com/:b:/g/personal/vera_perez_upb_edu_co/EaIafHzSSxFOmAdXvPJzVxIBcPcu_KEhUCUu-k56LJJ4GQ?e=UVVPgY)
+
+
+
+
+
+
 
