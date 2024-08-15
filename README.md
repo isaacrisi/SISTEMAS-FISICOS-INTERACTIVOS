@@ -515,12 +515,13 @@ Lo que el programa hace es hace un tarea que utiliza dos métodos auxiliares. In
 ![image](https://github.com/user-attachments/assets/ab091042-d531-4584-b67f-643ed57fc0e5)
 Aparentemente, al cambiar el valor del puntero de `pvar` también se cambió, de alguna forma, la variable `var`.
 
-# Ejercicio 14 (incompleto)
+# Ejercicio 14
 Realiza un programa que intercambie mediante una función el valor de dos variables.
 ``` c++
-static void changeVar(uint32_t *pdata)
+static void changeVar(uint32_t *pdata,uint32_t vata)
 {
-    *pdata = 10;
+    *pdata = vata;
+    vata = 30;
      //data = 15; No importa si se le cambia el valor a la variable que tiene el puntero, solo permite cambiar el valor si se le cambia el valor al puntero.
 }
 
@@ -551,15 +552,15 @@ void task1()
     case Task1States::WAIT_DATA:
     {
         // evento 1:        // Ha llegado al menos un dato por el puerto serial?        
-	if (Serial.available() > 0)
+  if (Serial.available() > 0)
         {
             Serial.read();
-            uint32_t var = 1;
+            uint32_t var = 10;
             uint32_t *pvar = &var;
-            printVar(*pvar); printVar(var); Serial.print('\n'); Serial.print('\n');
-            changeVar(pvar);
-            //var = 15; Si se cambia aquí, ahora si se actualiza el valor de ambas variables wat???
-            printVar(*pvar); printVar(var); Serial.print('\n'); Serial.print('\n');
+            uint32_t var2 = 20;
+            printVar(var); printVar(var2); Serial.print('\n'); Serial.print('\n');
+            changeVar(pvar,var2); var = 15;
+            printVar(var); printVar(var2); Serial.print('\n'); Serial.print('\n');
         }
         break;
     }
@@ -581,10 +582,8 @@ void loop()
     task1();
 }
 ```
-No sé que está pidiendo la profe, lo de arriba fue más que nada experimentando.
 
-# Ejercicio 15 (incompleto)
-static void processData(uint8_t *pData, uint8_t size, uint8_t *res)
+# Ejercicio 15
 ``` c++
 static void processData(uint8_t *pData, uint8_t size, uint8_t *res)
 {
