@@ -870,7 +870,7 @@ void loop()
             handleRadiation();
             break;
         case SystemState::SAFETY:
-            Serial.println("SALVASTE AL MUNDO");
+            Serial.println("SALVASTE AL MUNDO"); delay(5000);
             while (true); // Detener el programa
             break;
     }
