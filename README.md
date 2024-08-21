@@ -829,7 +829,8 @@ Te dejo el siguiente material trabajado en clase como complemento a la informaci
 
 [Presentación de sistemas embebidos](https://upbeduco-my.sharepoint.com/:b:/g/personal/vera_perez_upb_edu_co/EaIafHzSSxFOmAdXvPJzVxIBcPcu_KEhUCUu-k56LJJ4GQ?e=UVVPgY)
 ``` c++
-enum class SystemState {
+enum class SystemState
+{
     CONFIG,
     COUNTDOWN,
     RADIATION,
@@ -847,21 +848,18 @@ unsigned long countdownStartTime = 0;
 
 void setup() {
     Serial.begin(115200);
-    Serial.println("Sistema Iniciado.");
-    Serial.println('\n');
-    Serial.println("Modo CONFIG: Establezca el tiempo de apertura de la cámara.");
-    Serial.println('\n');
-    Serial.println("Presione 'S' para subir el tiempo, 'B' para bajar el tiempo.");
-    Serial.println('\n');
-    Serial.println("Cuando esté listo, presione 'L' para iniciar la cuenta regresiva.");
-    Serial.println('\n');
-    Serial.print("Tiempo actual configurado: ");
-    Serial.println('\n');
+    Serial.println("Sistema Iniciado."); Serial.println('\n');
+    Serial.println("Modo CONFIG: Establezca el tiempo de apertura de la cámara."); Serial.println('\n');
+    Serial.println("Presione 'S' para subir el tiempo, 'B' para bajar el tiempo."); Serial.println('\n');
+    Serial.println("Cuando esté listo, presione 'L' para iniciar la cuenta regresiva."); Serial.println('\n');
+    Serial.print("Tiempo actual configurado: "); Serial.println('\n');
     Serial.println(countdownTime);
 }
 
-void loop() {
-    switch (currentState) {
+void loop()
+{
+    switch (currentState)
+{
         case SystemState::CONFIG:
             handleConfig();
             break;
@@ -878,58 +876,73 @@ void loop() {
     }
 }
 
-void handleConfig() {
-    if (Serial.available() > 0) {
+void handleConfig()
+{
+    if (Serial.available() > 0)
+    {
         char input = Serial.read();
-        if (input == 'S' && countdownTime < maxTime) {
+        if (input == 'S' && countdownTime < maxTime)
+        {
             countdownTime++;
             Serial.print("Tiempo configurado: ");
             Serial.println(countdownTime);
-        } else if (input == 'B' && countdownTime > minTime) {
+        } else if (input == 'B' && countdownTime > minTime)
+        {
             countdownTime--;
             Serial.print("Tiempo configurado: ");
             Serial.println(countdownTime);
-        } else if (input == 'L') {
+        } else if (input == 'L')
+        {
             Serial.print("Cuenta regresiva en: ");
             Serial.println(countdownTime);
             currentState = SystemState::COUNTDOWN;
             countdownStartTime = millis();
-        } else {
+        } else
+        {
             Serial.println("Entrada no válida. Use 'S' para subir, 'B' para bajar, 'L' para iniciar.");
         }
     }
 }
 
-void handleCountdown() {
+void handleCountdown()
+{
     unsigned long currentTime = millis();
     unsigned long elapsedTime = (currentTime - countdownStartTime) / 1000;
     int remainingTime = countdownTime - elapsedTime;
 
-    if (remainingTime > 0) {
+    if (remainingTime > 0)
+    {
         Serial.print("Tiempo restante: ");
         Serial.println(remainingTime);
 
-        if (Serial.available() > 0) {
+        if (Serial.available() > 0)
+        {
             char input = Serial.read();
-            if (input == 'C') {
+            if (input == 'C')
+            {
                 enteredCode = Serial.readStringUntil('\n');
-                if (enteredCode == accessCode) {
+                if (enteredCode == accessCode)
+                {
                     currentState = SystemState::SAFETY;
-                } else {
+                } else
+                {
                     Serial.println("Código incorrecto. Continuando cuenta regresiva.");
                 }
-            } else {
+            } else
+            {
                 Serial.println("Entrada no válida durante la cuenta regresiva. Ingrese 'C' seguido del código.");
             }
         }
 
         delay(1000);
-    } else {
+    } else
+    {
         currentState = SystemState::RADIATION;
     }
 }
 
-void handleRadiation() {
+void handleRadiation()
+{
     Serial.println("RADIACIÓN NUCLEAR ACTIVA");
     delay(2000); // Esperar 2 segundos
     currentState = SystemState::CONFIG;
