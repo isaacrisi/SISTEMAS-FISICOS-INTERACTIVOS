@@ -843,7 +843,7 @@ const int maxTime = 40;
 const int minTime = 1;
 int countdownTime = defaultTime;
 const String accessCode = "1234"; // Código de acceso correcto
-string enteredCode = "";
+String enteredCode = "";
 unsigned long countdownStartTime = 0;
 
 void setup() {
