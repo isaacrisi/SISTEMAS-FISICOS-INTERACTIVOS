@@ -935,7 +935,7 @@ void handleCountdown()
             }
         }
 
-        delay(1000);
+        delay(2000);
     } else
     {
         currentState = SystemState::RADIATION;
