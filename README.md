@@ -848,6 +848,7 @@ unsigned long countdownStartTime = 0;
 
 void setup() {
     Serial.begin(115200);
+    delay(10000);
     Serial.println("Sistema Iniciado."); Serial.println('\n');
     Serial.println("Modo CONFIG: Establezca el tiempo de apertura de la cámara."); Serial.println('\n');
     Serial.println("Presione 'S' para subir el tiempo, 'B' para bajar el tiempo."); Serial.println('\n');
