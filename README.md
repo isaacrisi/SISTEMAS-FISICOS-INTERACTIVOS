@@ -899,8 +899,11 @@ void handleConfig()
             Serial.println(countdownTime);
             currentState = SystemState::COUNTDOWN;
             countdownStartTime = millis();
-        } else
+        } else if (input == '\n')
         {
+            Serial.println("");
+        }
+        else {
             Serial.println("Entrada no válida. Use 'S' para subir, 'B' para bajar, 'L' para iniciar.");
         }
     }
