@@ -951,3 +951,7 @@ void handleRadiation()
     countdownTime = defaultTime; // Reiniciar tiempo de configuración
 }
 ```
+## Diagrama de estados 
+![diagrama de estados](https://github.com/user-attachments/assets/598f47e3-2375-4a9a-8b80-7c26fcfb7ad0)
+
+
