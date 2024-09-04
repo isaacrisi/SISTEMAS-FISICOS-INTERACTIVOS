@@ -9,3 +9,6 @@ Menos -1
 `Unidad 2` - Empezada
 `Unidad 3` - Sin empezar
 `Unidad 4` - Sin empezar
+
+
+https://www.amazon.co.jp/s?k=beyblade+x&crid=2919SDNY9LADD&sprefix=beyblade+x+%2Caps%2C180&ref=nb_sb_noss_2
